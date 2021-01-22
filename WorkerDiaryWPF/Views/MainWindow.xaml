@@ -1,0 +1,97 @@
+﻿<mah:MetroWindow x:Class="WorkerDiaryWPF.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:local="clr-namespace:WorkerDiaryWPF"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="850">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+
+
+        <StackPanel Orientation="Horizontal">
+
+            <Button Command="{Binding AddEmployeeCommand}" 
+                    Content="Dodaj" 
+                    Height="25" 
+                    Width="100" 
+                    Margin="5" 
+                    />
+
+            <Button Command="{Binding EditEmployeeCommand}" 
+                    CommandParameter="{Binding SeletedStudent}"
+                    Content="Edytuj" 
+                    Height="25" 
+                    Width="100" 
+                    Margin="5" 
+                    />
+            <Button Command="{Binding DismissCommand}" 
+                    CommandParameter="{Binding SeletedEmployee}"
+                    Content="Zwolnij" 
+                    Height="25" 
+                    Width="100" 
+                    Margin="5" 
+                    />
+            <Button Command="{Binding DeleteEmployeeCommand}" 
+                    CommandParameter="{Binding SeletedEmployee}"
+                    Content="Usuń" 
+                    Height="25" 
+                    Width="100" 
+                    Margin="5" 
+                    />
+
+            <ComboBox 
+                Height="25" 
+                Width="150" 
+                Margin="5"
+                ItemsSource="{Binding Groups}"
+                SelectedValue="{Binding SelectedGroupId}"
+                DisplayMemberPath="Name"
+                SelectedValuePath="Id"
+                
+                />
+
+            <Button 
+                Command="{Binding RefreshEmployeesCommand}" 
+                Content="Odśwież" 
+                Height="25" Width="100" 
+                Margin="5" 
+                />
+            <Button 
+                Command="{Binding SettingsCommand}" 
+                Content="Ustawienia" 
+                Height="25" Width="100" 
+                Margin="5" 
+                />
+
+        </StackPanel>
+        <DataGrid 
+            Grid.Row="1" 
+            Margin="5"
+            ItemsSource="{Binding Employees}"
+            SelectedItem="{Binding SelectedEmployee}"
+            CanUserAddRows ="False"
+            IsReadOnly="True"
+            SelectionMode="Single"
+            AutoGenerateColumns="False">
+            <DataGrid.Columns>
+                <DataGridTextColumn Binding="{Binding Id}" Visibility="Hidden" />
+                <DataGridTextColumn Binding="{Binding FirstName}" Header="Imie" />
+                <DataGridTextColumn Binding="{Binding LastName}" Header="Nazwisko" />
+                <DataGridTextColumn Binding="{Binding Comments}" Header="Uwagi" />
+                <DataGridTextColumn Binding="{Binding Job}" Header="Etat" />
+                <DataGridTextColumn Binding="{Binding Earnings}" Header="Zarobki" />
+                <DataGridTextColumn Binding="{Binding DateOfEmployment}" Header="Data zatrudninia" />
+                <DataGridCheckBoxColumn Binding="{Binding Hired}" Header="Zatrudniony" />
+                <DataGridTextColumn Binding="{Binding Shift.Name}" Header="Zmiana" />
+                <DataGridTextColumn Binding="{Binding Email}" Header="E-mail" />
+                <DataGridTextColumn Binding="{Binding Phone}" Header="Telefon" />
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</mah:MetroWindow>
