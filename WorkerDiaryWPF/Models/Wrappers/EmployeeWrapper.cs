@@ -71,5 +71,13 @@ namespace WorkerDiaryWPF.Models.Wrappers
             }
         }
         public string Error { get; set; }
+        public bool IsValid
+        {
+            get
+            {
+                return _isFirstNameValid && _isLastNameValid && Shift.IsValid;
+            }
+
+        }
     }
 }

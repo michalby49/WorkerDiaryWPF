@@ -19,6 +19,7 @@ namespace WorkerDiaryWPF.Models.Domains
         public string Phone { get; set; }
         public bool Hired { get; set; }
         public int ShiftId { get; set; }
+
         public Shift Shift { get; set; }
        
 

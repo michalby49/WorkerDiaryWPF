@@ -13,50 +13,53 @@ using WorkerDiaryWPF.Models.Wrappers;
 using System.Windows;
 using WorkerDiaryWPF.Properties;
 using WorkerDiaryWPF.Models.Domains;
+using System.Data.SqlClient;
 
 namespace WorkerDiaryWPF.ViewModels
 {
     class MainWindowViewModel : ViewModelBase
     {
-        //private Repository _repository = new Repository();
+        private Repository _repository = new Repository();
 
         public MainWindowViewModel()
         {
-            //bool settingsAreGood;
-            //do
-            //{
-            //    try
-            //    {
-            //        settingsAreGood = true;
 
-            //        using (SqlConnection conn = new SqlConnection($@"Server=({ServerWrapper.Address})\{ServerWrapper.Name};Database={ServerWrapper.DataBaseName};User Id={ServerWrapper.DataBaseLogin};Password={ServerWrapper.DataBasePassword};App=EntityFramework"))
-            //        {
-            //            conn.Open();
-            //        }
-            //    }
-            //    catch (Exception)
-            //    {
-            //        var openSettings = new SettingsView(false);
-            //        settingsAreGood = false;
+            bool settingsAreGood;
+            do
+            {
+                try
+                {
+                    settingsAreGood = true;
 
-            //        openSettings.ShowDialog();
-            //    }
+                    using (SqlConnection conn = new SqlConnection($@"Server=({ServerWrapper.Address})\{ServerWrapper.Name};Database={ServerWrapper.DataBaseName};User Id={ServerWrapper.DataBaseLogin};Password={ServerWrapper.DataBasePassword};App=EntityFramework"))
+                    {
+                        conn.Open();
+                    }
+                }
+                catch (Exception)
+                {
+                    var openSettings = new SettingsView(false);
+                    settingsAreGood = false;
 
-            //} while (!settingsAreGood);
+                    openSettings.ShowDialog();
+                }
+
+            } while (!settingsAreGood);
 
 
 
             AddEmployeeCommand = new RelayCommand(AddEditEmployee);
-            EditEmployeeCommand = new RelayCommand(AddEditEmployee, CanEditDeleteEmployee);
-            DeleteEmployeeCommand = new AsyncRelayCommand(DeleteEmployee, CanEditDeleteEmployee);
+            EditEmployeeCommand = new RelayCommand(AddEditEmployee, CanEditDismissDeleteEmployee);
+            DeleteEmployeeCommand = new AsyncRelayCommand(DeleteEmployee, CanEditDismissDeleteEmployee);
             RefreshEmployeesCommand = new RelayCommand(RefreshEmployee);
             SettingsCommand = new RelayCommand(OpenSettings);
+            DismissCommand = new AsyncRelayCommand(DismissEmployee, CanEditDismissDeleteEmployee);
 
             RefreshDiary();
-            //InitGroups();
+            InitGroups();
         }
 
-
+        
 
         private int _selectedShiftId;
 
@@ -107,15 +110,27 @@ namespace WorkerDiaryWPF.ViewModels
         }
         private void OpenSettings(object obj)
         {
-            //var openSettings = new SettingsView(true);
+            var openSettings = new SettingsView(true);
 
-            //openSettings.Closed += OpenSettings_Closed;
-            //openSettings.ShowDialog();
+            openSettings.Closed += OpenSettings_Closed;
+            openSettings.ShowDialog();
         }
 
         private void OpenSettings_Closed(object sender, EventArgs e)
         {
             Settings.Default.Reload();
+        }
+        private async Task DismissEmployee(object obj)
+        {
+            var metroWindow = Application.Current.MainWindow as MetroWindow;
+            var dialog = await metroWindow.ShowMessageAsync("Zwalnianie pracownika", $"Czy napewno chcesz zwolnić pracownika {SelectedEmployee.FirstName} {SelectedEmployee.LastName}?", MessageDialogStyle.AffirmativeAndNegative);
+
+            if (dialog != MessageDialogResult.Affirmative)
+                return;
+
+            _repository.DismissEmployee(SelectedEmployee.Id);
+
+            RefreshDiary();
         }
 
         private void RefreshEmployee(object obj)
@@ -125,12 +140,12 @@ namespace WorkerDiaryWPF.ViewModels
         private async Task DeleteEmployee(object obj)
         {
             var metroWindow = Application.Current.MainWindow as MetroWindow;
-            var dialog = await metroWindow.ShowMessageAsync("Usuwanie ucznia", $"Czy napewno chcesz usunąć ucznia {SelectedEmployee.FirstName} {SelectedEmployee.LastName}?", MessageDialogStyle.AffirmativeAndNegative);
+            var dialog = await metroWindow.ShowMessageAsync("Usuwanie pracownika", $"Czy napewno chcesz usunąć pracownika {SelectedEmployee.FirstName} {SelectedEmployee.LastName}?", MessageDialogStyle.AffirmativeAndNegative);
 
             if (dialog != MessageDialogResult.Affirmative)
                 return;
 
-            //_repository.DeleteStudent(SelectedStudent.Id);
+            _repository.DeleteEmployee(SelectedEmployee.Id);
 
             RefreshDiary();
         }
@@ -138,10 +153,10 @@ namespace WorkerDiaryWPF.ViewModels
 
         private void AddEditEmployee(object obj)
         {
-            var addEditStudentWindow = new AddEditEmployeeView(SelectedEmployee);
+            var addEditEmployeeWindow = new AddEditEmployeeView(SelectedEmployee);
 
-            addEditStudentWindow.Closed += AddEditEmployeeWindow_Closed;
-            addEditStudentWindow.ShowDialog();
+            addEditEmployeeWindow.Closed += AddEditEmployeeWindow_Closed;
+            addEditEmployeeWindow.ShowDialog();
         }
 
         private void AddEditEmployeeWindow_Closed(object sender, System.EventArgs e)
@@ -149,24 +164,24 @@ namespace WorkerDiaryWPF.ViewModels
             RefreshDiary();
         }
 
-        private bool CanEditDeleteEmployee(object obj)
+        private bool CanEditDismissDeleteEmployee(object obj)
         {
             return SelectedEmployee != null;
         }
-        //private void InitGroups()
-        //{
-        //   var groups = _repository.GetGroups();
-        //    groups.Insert(0, new Group { Id = 0, Name = "Wszystkie" });
+        private void InitGroups()
+        {
+            var shifts = _repository.GetShifts();
+            shifts.Insert(0, new Shift { Id = 0, Name = "Wszystkie" });
 
-        //    Groups = new ObservableCollection<Group>(groups);
+            Shifts = new ObservableCollection<Shift>(shifts);
 
-        //    SelectedGroupId = 0;
-        //}
+            SelectedShiftId = 0;
+        }
         private void RefreshDiary()
         {
 
-            //Employees = new ObservableCollection<EmployeeWrapper>
-                //(_repository.GetStudents(SelectedGroupId));
+            Employees = new ObservableCollection<EmployeeWrapper>
+                (_repository.GetEmployees(SelectedShiftId));
 
         }
 

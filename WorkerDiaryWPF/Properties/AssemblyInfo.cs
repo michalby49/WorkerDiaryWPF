@@ -7,10 +7,10 @@ using System.Windows;
 // Ogólne informacje o zestawie są kontrolowane poprzez następujący 
 // zestaw atrybutów. Zmień wartości tych atrybutów, aby zmodyfikować informacje
 // powiązane z zestawem.
-[assembly: AssemblyTitle("WorkerDiaryWPF")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Diary App")]
+[assembly: AssemblyDescription("Worker Diary App")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Michał Beśka")]
 [assembly: AssemblyProduct("WorkerDiaryWPF")]
 [assembly: AssemblyCopyright("Copyright ©  2021")]
 [assembly: AssemblyTrademark("")]

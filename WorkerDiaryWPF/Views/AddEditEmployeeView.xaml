@@ -4,10 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-        xmlns:local="clr-namespace:WorkerDiaryWPF.Views"
+        xmlns:local="clr-namespace:WorkerDiaryWPF.Views" xmlns:viewmodels="clr-namespace:WorkerDiaryWPF.ViewModels" d:DataContext="{d:DesignInstance Type=viewmodels:AddEditEmployeeViewModel}"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="Dane pracownika" Height="450" Width="311.357">
+        Name ="AddEditEmployeeWindow"
+        Title="Dane pracownika" Height="544" Width="353.357">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -33,7 +34,7 @@
                Content="Id:" 
                Margin="5"/>
         <TextBox Visibility="{Binding IsUpdate, Converter={StaticResource BooleanToVisibilityConverter}}"
-                 Text="{Binding Student.Id}" 
+                 Text="{Binding Employee.Id}" 
                  IsReadOnly="True" 
                  Grid.Row="0" 
                  Grid.Column="1" 
@@ -45,43 +46,47 @@
             ValidatesOnDataErrors=True}" Grid.Row="1" Grid.Column="1" Margin="5"/>
 
         <Label Grid.Row="2" Content="Nazwisko:" Margin="5"/>
-        <TextBox Text="{Binding Student.LastName,
+        <TextBox Text="{Binding Employee.LastName,
              UpdateSourceTrigger=PropertyChanged,
              ValidatesOnDataErrors=True}" Grid.Row="2" Grid.Column="1" Margin="5"/>
 
-        <Label Grid.Row="3" Content="Matematyka:" Margin="5"/>
-        <TextBox Text="{Binding Student.Math}" Grid.Row="3" Grid.Column="1" Margin="5"/>
+        <Label Grid.Row="3" Content="Etat:" Margin="5"/>
+        <TextBox Text="{Binding Employee.Job}" Grid.Row="3" Grid.Column="1" Margin="5"/>
 
-        <Label Grid.Row="4" Content="Technologia:" Margin="5"/>
-        <TextBox Text="{Binding Student.Technology}" Grid.Row="4" Grid.Column="1" Margin="5"/>
+        <Label Grid.Row="4" Content="Zarobki:" Margin="5"/>
+        <TextBox Text="{Binding Employee.Earnings}" Grid.Row="4" Grid.Column="1" Margin="5"/>
 
-        <Label Grid.Row="5" Content="Fizyka:" Margin="5"/>
-        <TextBox Text="{Binding Student.Physics}" Grid.Row="5" Grid.Column="1" Margin="5"/>
+        <Label Grid.Row="5" Content="Data Zatrudnienia:" Margin="5"/>
+        <TextBox Text="{Binding Employee.DateOfEmployment}" Grid.Row="5" Grid.Column="1" Margin="5"/>
 
-        <Label Grid.Row="6" Content="Jęz. pol:" Margin="5"/>
-        <TextBox Text="{Binding Student.PolishLang}" Grid.Row="6" Grid.Column="1" Margin="5"/>
+        <Label Grid.Row="6" Content="Adres E-mail:" Margin="5"/>
+        <TextBox Text="{Binding Employee.Email}" Grid.Row="6" Grid.Column="1" Margin="5"/>
 
-        <Label Grid.Row="7" Content="Jęz. ang:" Margin="5"/>
-        <TextBox Text="{Binding Student.EnglishLang}" Grid.Row="7" Grid.Column="1" Margin="5"/>
+        <Label Grid.Row="7" Content="Nr. telefonu:" Margin="5"/>
+        <TextBox Text="{Binding Employee.Phone}" Grid.Row="7" Grid.Column="1" Margin="5"/>
 
-        <Label Grid.Row="8" Content="Grupa:" Margin="5"/>
+        <CheckBox IsChecked="{Binding Employee.Hired}"
+                  Visibility="{Binding IsUpdate, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  Content="Zatrudniony" Grid.Row="8" Grid.Column="1" Margin="5"/>
+
+        <Label Grid.Row="9" Content="Zmiana:" Margin="5"/>
         <ComboBox 
-            Grid.Row="8" 
+            Grid.Row="9" 
             Grid.Column="1" 
             Margin="5"
-            ItemsSource="{Binding Groups}"
-            SelectedValue="{Binding Student.Group.Id, 
+            ItemsSource="{Binding Shifts}"
+            SelectedValue="{Binding Employee.Shift.Id, 
              UpdateSourceTrigger=PropertyChanged,
              ValidatesOnDataErrors=True}"
             DisplayMemberPath="Name"
             SelectedValuePath="Id"/>
 
-        <CheckBox IsChecked="{Binding Student.Activities}" Content="Zajęcia Dodadkowe" Grid.Row="9" Grid.Column="1" Margin="5"/>
+        
 
         <Label Grid.Row="10" Content="Uwagi:" Margin="5"/>
         <TextBox 
             TextWrapping="Wrap"
-            Text="{Binding Student.Comments}" 
+            Text="{Binding Employee.Comments}" 
             AcceptsReturn="True"
             Grid.Row="10" 
             Grid.Column="1" 
@@ -89,13 +94,13 @@
 
         <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="11" HorizontalAlignment="Right">
             <Button Command="{Binding ConfirmCommand}" 
-                    CommandParameter="{Binding ElementName=AddEditSutendWindow}"
+                    CommandParameter="{Binding ElementName=AddEditEmployeeWindow}"
                     Content="Zatwierdź" 
                     Height="25" 
                     Width="100" 
                     Margin="5"/>
             <Button Command="{Binding CloseCommand}" 
-                    CommandParameter="{Binding ElementName=AddEditSutendWindow}"
+                    CommandParameter="{Binding ElementName=AddEditEmployeeWindow}"
                     Content="Anuluj" 
                     Height="25" 
                     Width="100" 
